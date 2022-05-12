@@ -2,90 +2,75 @@ package com.example.healthprojectv;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.healthprojectv.databinding.ActivityMainBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView register;
+import org.jetbrains.annotations.Nullable;
 
-    private FirebaseAuth mAuth;
-    private EditText emailI, passwordI;
-    private Button signIn;
+public class MainActivity extends AppCompatActivity{
 
+    BottomNavigationView bottomNavigationView;
+    Notification notification = new Notification();
+    Record record = new Record();
+    SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.bottom_navigation_bar);
 
-        register = (TextView) findViewById(R.id.registerUser);
-        register.setOnClickListener(this);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        signIn = (Button) findViewById(R.id.login);
-        signIn.setOnClickListener(this);
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, notification).commit();
+        bottomNavigationView.setSelectedItemId(R.id.notifications);
 
-        emailI = (EditText) findViewById(R.id.emailI);
-        passwordI = (EditText) findViewById(R.id.passwordI);
-
-        mAuth=FirebaseAuth.getInstance();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.registerUser:
-                startActivity(new Intent(this, RegisterUser.class));
-                break;
-            case R.id.login:
-                userLogin();
-                break;
-
-        }
-    }
-
-    private void userLogin() {
-
-        String email = emailI.getText().toString().trim();
-        String password = passwordI.getText().toString().trim();
-
-        if (email.isEmpty()) {
-            emailI.setError("Введите ваш email");
-            emailI.requestFocus();
-            return;
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailI.setError("Введите ваш email");
-            emailI.requestFocus();
-            return;
-        }
-        if (password.isEmpty()) {
-            passwordI.setError("Введите ваш пароль");
-            passwordI.requestFocus();
-            return;
-        }
-        mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    startActivity(new Intent(MainActivity.this,NotificationScreen.class));
+            public boolean onNavigationItemSelected( MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.notifications:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, notification).commit();
+                        return true;
+
+                    case R.id.record:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, record).commit();
+                        return true;
+
+                    case R.id.settings:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.container, settingsFragment).commit();
+                        return true;
                 }
-                else {
-                    Toast.makeText(MainActivity.this, "Не удалось войти.Проверьте вводимые данные", Toast.LENGTH_SHORT).show();
-                }
+                return false;
             }
         });
+
+
     }
+
+
+
+
+
+
+
+
 }

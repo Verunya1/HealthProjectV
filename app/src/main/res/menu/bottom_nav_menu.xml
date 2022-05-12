@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/notifications"
+        android:title="Уведомления"
+       android:icon="@drawable/ic_baseline_notifications_none_24" />
+    <item
+        android:id="@+id/record"
+        android:title="Запись"
+        android:icon="@drawable/ic_baseline_bookmark_add_24"/>
+    <item
+        android:id="@+id/settings"
+        android:title="Настройки"
+        android:icon="@drawable/ic_baseline_settings_24"/>
+</menu>
