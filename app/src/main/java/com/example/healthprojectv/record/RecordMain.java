@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.healthprojectv.R;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -95,8 +96,16 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         ButterKnife.bind(this, rootView);
 
         listRecords = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child("Record");
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Record");
 
+//        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference("Recipe").push();
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        taskRecycler.setLayoutManager(layoutManager);
+        recordAdapter = new RecordAdapter(this.getContext(),listRecords );
+        taskRecycler.setHasFixedSize(true);
+        taskRecycler.setAdapter(recordAdapter);
+        Content();//из бд
 
 
 
@@ -161,12 +170,14 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     }
 
     private void Recycler() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
-        taskRecycler.setLayoutManager(layoutManager);
-        RecordAdapter recordAdapter = new RecordAdapter(this.getContext(),listRecords );
-        taskRecycler.setHasFixedSize(true);
-        taskRecycler.setAdapter(recordAdapter);
-        Content();
+
+//        RecordAddInform recordAddInform = new RecordAddInform("a","a","a","a","a");
+        RecordAddInform recordAddInform = new RecordAddInform();
+        listRecords.add(recordAddInform);
+        databaseReference.push().setValue(recordAddInform);
+        recordAdapter.notifyDataSetChanged();
+//        Content();
+//         добавить когда появится бд и поставить перед 169 строчкой
 //        Delete();
 
 
@@ -187,11 +198,12 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                     listRecords.add(recordAddInform);
                 }
                 recordAdapter.notifyDataSetChanged();
-            }
+            }//
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 //                Toast.makeText(getContext(), "",error.getMessage(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }
