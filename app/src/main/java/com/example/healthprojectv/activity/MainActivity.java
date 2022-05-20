@@ -1,36 +1,26 @@
-package com.example.healthprojectv;
+package com.example.healthprojectv.activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.ui.AppBarConfiguration;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Patterns;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.healthprojectv.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.healthprojectv.Notification;
+import com.example.healthprojectv.R;
+import com.example.healthprojectv.bottomSheetFragment.RecordChooseBottom;
+import com.example.healthprojectv.SettingsFragment;
+import com.example.healthprojectv.record.RecordMain;
+import com.example.healthprojectv.safety.RegisterUser;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-
-
-import org.jetbrains.annotations.Nullable;
 
 public class MainActivity extends AppCompatActivity{
 
     BottomNavigationView bottomNavigationView;
     Notification notification = new Notification();
-    Record record = new Record();
+    RecordMain record = new RecordMain();
     SettingsFragment settingsFragment = new SettingsFragment();
 
     @Override
@@ -43,6 +33,10 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager().beginTransaction().replace(R.id.container, notification).commit();
         bottomNavigationView.setSelectedItemId(R.id.notifications);
 
+        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.notifications);
+        badgeDrawable.setVisible(true);
+        badgeDrawable.setNumber(8);
+
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected( MenuItem item) {
@@ -53,6 +47,7 @@ public class MainActivity extends AppCompatActivity{
 
                     case R.id.record:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, record).commit();
+//                        startActivity(new Intent(this, RecordChooseBottom.class));
                         return true;
 
                     case R.id.settings:

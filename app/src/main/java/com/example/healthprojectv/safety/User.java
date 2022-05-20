@@ -1,9 +1,9 @@
-package com.example.healthprojectv;
+package com.example.healthprojectv.safety;
 
 import android.widget.EditText;
 
 public class User {
-    public String name,age,email;
+    public String name,age,email,id;
     public User(){
 
     }
