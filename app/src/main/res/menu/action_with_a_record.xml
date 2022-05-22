@@ -7,10 +7,10 @@
         android:title="Удалить"
         app:showAsAction="ifRoom" />
 
-    <item
+   <!-- <item
         android:id="@+id/menuUpdate"
         android:title="Обновить"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 
     <!--<item
         android:id="@+id/menuComplete"

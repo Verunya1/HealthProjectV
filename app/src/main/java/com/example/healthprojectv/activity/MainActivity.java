@@ -2,16 +2,13 @@ package com.example.healthprojectv.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.healthprojectv.Notification;
 import com.example.healthprojectv.R;
-import com.example.healthprojectv.bottomSheetFragment.RecordChooseBottom;
 import com.example.healthprojectv.SettingsFragment;
 import com.example.healthprojectv.record.RecordMain;
-import com.example.healthprojectv.safety.RegisterUser;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;

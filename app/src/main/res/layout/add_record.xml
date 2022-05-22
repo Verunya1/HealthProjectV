@@ -138,6 +138,14 @@
             android:background="@drawable/btn_background"
             android:textColor="@color/colorPrimary"
             android:layout_marginTop="40dp" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/closeButton"
+            android:text="Закрыть"
+            android:background="@drawable/btn_background"
+            android:textColor="@color/colorPrimary"
+            android:layout_marginTop="40dp" />
 
     </LinearLayout>
 </ScrollView>

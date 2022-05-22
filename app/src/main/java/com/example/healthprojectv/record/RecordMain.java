@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,12 +26,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.healthprojectv.R;
+import com.example.healthprojectv.broadcastReceiver.AlarmBroadcastReceiver;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +51,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -60,35 +67,12 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     @BindView(R.id.addTask)
     TextView addTask;
 
-//    @BindView(R.id.options)
-//    ImageView options;
-
-   /* @BindView(R.id.addTaskTitle)
-    EditText addTaskTitle;
-    @BindView(R.id.addTaskDescription)
-    EditText addTaskDescription;
-    @BindView(R.id.taskDate)
-    EditText taskDate;
-    @BindView(R.id.taskTime)
-    EditText taskTime;*/
- /*   @BindView(R.id.title)
-   EditText addTaskTitle;
-    @BindView(R.id.description)
-    EditText addTaskDescription;
-    @BindView(R.id.taskDate)
-    EditText taskDate;
-    @BindView(R.id.taskTime)
-    EditText taskTime;
-    на этой активности- фрагменте нет ни имени ни времени ни тд это есть во всплывающем окне
-  */
-
-
     // setRefreshListener setRefreshListener;
     AlarmManager alarmManager;
     TimePickerDialog timePickerDialog;
     DatePickerDialog datePickerDialog;
-     int mHour ;
-     int mMinute;
+    int mHour;
+    int mMinute;
     EditText title;
     EditText description;
     EditText date;
@@ -97,6 +81,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     ImageView calendar;
     //private FirebaseOptions
     RecordAdapter recordAdapter;
+    public static int count = 0;
 
 
     LinearLayoutManager layoutManager;
@@ -137,6 +122,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         taskRecycler = (RecyclerView) rootView.findViewById(R.id.taskRecycler);
 //        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         addTask.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 addRecord();
@@ -147,6 +133,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void addRecord() {
 
         AlertDialog.Builder myDialog = new AlertDialog.Builder(this.getContext());
@@ -159,9 +146,10 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         dialog.setCancelable(false);
         dialog.show();
         Button add = myView.findViewById(R.id.addTask2);
+        Button close = myView.findViewById(R.id.closeButton);
         //-в всплывающем окне определяю кто за что отвечает
-        title= myView.findViewById(R.id.addTaskTitle);
-        description= myView.findViewById(R.id.addTaskDescription);
+        title = myView.findViewById(R.id.addTaskTitle);
+        description = myView.findViewById(R.id.addTaskDescription);
         date = myView.findViewById(R.id.taskDate);
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
@@ -195,8 +183,8 @@ public class RecordMain extends Fragment implements View.OnClickListener {
 
                 timePickerDialog = new TimePickerDialog(getActivity(),
                         (view12, hourOfDay, minute) -> {
-                            String time_=hourOfDay+":"+minute;
-                            time.setText( time_);
+                            String time_ = hourOfDay + ":" + minute;
+                            time.setText(time_);
                             timePickerDialog.dismiss();
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
@@ -204,42 +192,42 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         });
 
 
-  /*  String t1=
-    String d1=;
-    String da=;
-    String ti=;*/
         add.setOnClickListener(v -> {
-            Recycler(title.getText().toString(),description.getText().toString(),date.getText().toString(),time.getText().toString());//- передавть сюда данные времени и тд
+            if (title.getText().toString().length() == 0) {
+                Toast.makeText(getContext(), "Заполните тип напоминания", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (description.getText().toString().length() == 0) {
+                Toast.makeText(getContext(), "Заполните описание", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (date.getText().toString().length() == 0) {
+                Toast.makeText(getContext(), "Заполните дату", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (time.getText().toString().length() == 0) {
+                Toast.makeText(getContext(), "Заполните время", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Recycler(title.getText().toString(), description.getText().toString(), date.getText().toString(), time.getText().toString());//- передавть сюда данные времени и тд
+//            createAnAlarm();
+            createNotification();
             dialog.dismiss();
         });
 
+        close.setOnClickListener(v ->
+        {
+            dialog.dismiss();
+
+        });
 
 
-
-
-/*
-        taskDate.setOnTouchListener((view, motionEvent) -> {
-            if(motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                final Calendar c = Calendar.getInstance();
-                mYear = c.get(Calendar.YEAR);
-                mMonth = c.get(Calendar.MONTH);
-                mDay = c.get(Calendar.DAY_OF_MONTH);
-                datePickerDialog = new DatePickerDialog(getActivity(),
-                        (view1, year, monthOfYear, dayOfMonth) -> {
-                            taskDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                            datePickerDialog.dismiss();
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                datePickerDialog.show();
-            }
-            return true;
-        });*/
     }
 
-    private void Recycler(String title,String description, String date, String time) {
+    private void Recycler(String title, String description, String date, String time) {
 
 //        RecordAddInform recordAddInform = new RecordAddInform("a","a","a","a");
-        RecordAddInform recordAddInform = new RecordAddInform(title,description,date,time);
+        RecordAddInform recordAddInform = new RecordAddInform(title, description, date, time);
         listRecords.add(recordAddInform);
         databaseReference.push().setValue(recordAddInform);
         recordAdapter.notifyDataSetChanged();
@@ -259,9 +247,10 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     RecordAddInform recordAddInform = postSnapshot.getValue(RecordAddInform.class);
 
-                    if (recordAddInform != null) {
-                        recordAddInform.setKey(postSnapshot.getKey());
-                    }
+//                    if (recordAddInform != null) {
+//                        recordAddInform.setKey(postSnapshot.getKey());
+//                    }
+//                    Log.d("QQQ", recordAddInform.getTaskDate());
                     listRecords.add(recordAddInform);
                 }
                 recordAdapter.notifyDataSetChanged();
@@ -276,58 +265,63 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     }
 
 
-    public void Delete() {
-//        databaseReference.child(listRecords.get(viewHolder.getA));
-
-   /* ItemTouchHelper.SimpleCallback touchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-        @Override
-        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            mDatabaseReference.child(mListCharacter.get(viewHolder.getAdapterPosition()).getKey()).setValue(null);
-            mCharacterAdapter.deleteItem(viewHolder.getAdapterPosition());
-        }
-    };
-    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchHelperCallback);
-    itemTouchHelper.attachToRecyclerView(mRecyclerView);*/
-
-//        PopupMenu popupMenu = new PopupMenu(getContext(),options);
-//        popupMenu.getMenuInflater().inflate(R.menu.action_with_a_record, popupMenu.getMenu());
-//        popupMenu.setOnMenuItemClickListener(item -> {
-//            switch (item.getItemId()) {
-//                case R.id.menuDelete:
-//                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext(), R.style.AppTheme_Dialog);
-//                    alertDialogBuilder.setTitle(R.string.delete_confirmation).setMessage(R.string.sureToDelete).
-//                            setPositiveButton(R.string.yes, (dialog, which) -> {
-////                                databaseReference.child(listRecords.get(RecyclerView.ViewHolder .getAdapterPosition()).getKey()).setValue(null);
-////                                recordAdapter.deleteItem(RecyclerView.ViewHolder.getAdapterPosition());
-////                                recordAdapter.notifyItemRemoved();
-//
-//
-//                            })
-//                            .setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel()).show();
-//                    break;
-//                case R.id.menuUpdate:
-////                    CreateTaskBottomSheetFragment createTaskBottomSheetFragment = new CreateTaskBottomSheetFragment();
-////                    createTaskBottomSheetFragment.setTaskId(task.getTaskId(), true, context, context);
-////                    createTaskBottomSheetFragment.show(context.getSupportFragmentManager(), createTaskBottomSheetFragment.getTag());
-//                    break;
-//            }
-//            return false;
-//        });
-//        popupMenu.show();
-
-
-    }
-
-
     @Override
     public void onClick(View v) {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void createAnAlarm() {
+        try {
+            String[] items1 = date.getText().toString().split("\\.");
+            String dd = items1[0];
+            String month = items1[1];
+            String year = items1[2];
+
+            String[] itemTime = date.getText().toString().split(":");
+            String hour = itemTime[0];
+            String min = itemTime[1];
+
+            Calendar cur_cal = new GregorianCalendar();
+            cur_cal.setTimeInMillis(System.currentTimeMillis());
+
+            Calendar cal = new GregorianCalendar();
+            cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
+            cal.set(Calendar.MINUTE, Integer.parseInt(min));
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            cal.set(Calendar.DATE, Integer.parseInt(dd));
+
+            Intent alarmIntent = new Intent(rootView.getContext(), AlarmBroadcastReceiver.class);
+            alarmIntent.putExtra("TITLE", title.getText().toString());
+            alarmIntent.putExtra("DESC", description.getText().toString());
+            alarmIntent.putExtra("DATE", date.getText().toString());
+            alarmIntent.putExtra("TIME", time.getText().toString());
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(),count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                } else {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                }
+                count ++;
+
+                PendingIntent intent = PendingIntent.getBroadcast(rootView.getContext(), count, alarmIntent, 0);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
+                    } else {
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
+                    }
+                }
+                count ++;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

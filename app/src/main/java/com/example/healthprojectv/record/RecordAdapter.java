@@ -1,7 +1,9 @@
 package com.example.healthprojectv.record;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,9 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,8 +46,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
 
     public SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd MMM yyyy", Locale.US);
     public SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-M-yyyy", Locale.US);
-
-
 
 
     public RecordAdapter(Context context, List<RecordAddInform> recordAddInforms) {
@@ -68,20 +72,25 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         //-отработать нажатие активный неактивный
 //        holder.status.setText(task.getStatus() ? "Завершенный" : "Активный");
         holder.options.setOnClickListener(view -> showPopUpMenu(view, position));
-
         try {
-            holder.date1 = inputDateFormat.parse(task.getTaskDate());
-            holder.outputDateString = dateFormat.format(holder.date1);
-//            DateFormat.getDateInstance().format("dd.mm.yyyy")
-            String[] items1 = holder.outputDateString.split(".");
+//            holder.date = inputDateFormat.format(task.getTaskDate());
+//            holder.outputDateString = dateFormat.format(holder.date);
+//            String[] items1 = task.getTaskDate().split(".");
+//            String day1 = items1[0];
+//            String dd = items1[1];
+//            String month1 = items1[2];
+//            Log.d("RRR",task.getTaskDate());
+            String datw = task.getTaskDate();
+            String[] items1 = datw.split("\\.");
             String day1 = items1[0];
             String dd = items1[1];
             String month1 = items1[2];
 
-            holder.day.setText("day1");
-            holder.day.getText();
-//            Log.d("123",holder.day.getText().toString());
+
+            holder.day.setText(day1);
             holder.date.setText(dd);
+//            Log.d("RRR",holder.day.getText().toString());
+//            holder.date.setText(dd);
             holder.month.setText(month1);
 
         } catch (Exception e) {
@@ -90,7 +99,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     }
 
     public void showPopUpMenu(View view, int position) {
-         RecordAddInform task = recordAddInforms.get(position);
+        RecordAddInform task = recordAddInforms.get(position);
         PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
         popupMenu.getMenuInflater().inflate(R.menu.action_with_a_record, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(item -> {
@@ -99,7 +108,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
 //
                     AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext());
                     builder.setTitle("Удаление")
-                            .setMessage("Вы  уверены, что хотите удалить запись"  + "?")
+                            .setMessage("Вы  уверены, что хотите удалить запись" + "?")
                             .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -115,27 +124,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
                                 }
                             });
                     builder.show();
-                    break;
-                case R.id.menuUpdate:
-
-
-                    AlertDialog.Builder myDialog = new AlertDialog.Builder(view.getContext());
-                    LayoutInflater inflater = LayoutInflater.from(view.getContext());
-
-                    View myView = inflater.inflate(R.layout.add_record, null);
-                    myDialog.setView(myView);
-
-                    AlertDialog dialog = myDialog.create();
-                    dialog.setCancelable(false);
-//                    recordAddInforms.
-
-                    dialog.show();
-                    Button add = myView.findViewById(R.id.addTask2);
-                    add.setOnClickListener(v -> {
-                        dialog.dismiss();
-                    });
-
-
                     break;
             }
             return false;
@@ -188,8 +176,8 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-       /* @BindView(R.id.day)
-        TextView day;*/
+        /* @BindView(R.id.day)
+         TextView day;*/
         /*@BindView(R.id.date)
         TextView date;*/
        /* @BindView(R.id.month)
@@ -198,7 +186,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         TextView title;
         @BindView(R.id.description)
         TextView description;
-        @BindView(R.id.status)
+
         TextView status;
         @BindView(R.id.options)
         ImageView options;
@@ -209,31 +197,28 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         TextView date;
         TextView month;
 
-        Date date1 ;
+        Date date1;
         String outputDateString = null;
+
         MyViewHolder(@NonNull View view) {
             super(view);
             ButterKnife.bind(this, view);
-            day=view.findViewById(R.id.day);
-            date=view.findViewById(R.id.date);
-            month=view.findViewById(R.id.month);
+            day = view.findViewById(R.id.day);
+            date = view.findViewById(R.id.date);
+            month = view.findViewById(R.id.month);
 
         }
     }
 //        holder.onBind(position);
 
 
-
-
-
-
-    public void addItems(List<RecordAddInform> recordList){
+    public void addItems(List<RecordAddInform> recordList) {
         recordList.addAll(recordList);
         notifyDataSetChanged();
     }
 
-    public void deleteItem(int position){
-        if(recordAddInforms!=null & recordAddInforms.size()>0){
+    public void deleteItem(int position) {
+        if (recordAddInforms != null & recordAddInforms.size() > 0) {
             recordAddInforms.remove(position);
         }
         recordAddInforms.remove(position);
@@ -308,6 +293,5 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         }*/
 
 
-
-    }
+}
 
