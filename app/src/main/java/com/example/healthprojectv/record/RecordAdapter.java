@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,8 +40,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
 
     public SimpleDateFormat dateFormat = new SimpleDateFormat("EE dd MMM yyyy", Locale.US);
     public SimpleDateFormat inputDateFormat = new SimpleDateFormat("dd-M-yyyy", Locale.US);
-    Date date = null;
-    String outputDateString = null;
+
 
 
 
@@ -65,21 +65,24 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         holder.title.setText(task.getAddTaskTitle());
         holder.description.setText(task.getAddTaskDescription());
         holder.time.setText(task.getTaskTime());
+        //-отработать нажатие активный неактивный
 //        holder.status.setText(task.getStatus() ? "Завершенный" : "Активный");
         holder.options.setOnClickListener(view -> showPopUpMenu(view, position));
 
         try {
-            date = inputDateFormat.parse(task.getTaskDate());
-            outputDateString = dateFormat.format(date);
+            holder.date1 = inputDateFormat.parse(task.getTaskDate());
+            holder.outputDateString = dateFormat.format(holder.date1);
 //            DateFormat.getDateInstance().format("dd.mm.yyyy")
-            String[] items1 = outputDateString.split(".");
-            String day = items1[0];
+            String[] items1 = holder.outputDateString.split(".");
+            String day1 = items1[0];
             String dd = items1[1];
-            String month = items1[2];
+            String month1 = items1[2];
 
-            holder.day.setText(day);
+            holder.day.setText("day1");
+            holder.day.getText();
+//            Log.d("123",holder.day.getText().toString());
             holder.date.setText(dd);
-            holder.month.setText(month);
+            holder.month.setText(month1);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,12 +188,12 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.day)
-        TextView day;
-        @BindView(R.id.date)
-        TextView date;
-        @BindView(R.id.month)
-        TextView month;
+       /* @BindView(R.id.day)
+        TextView day;*/
+        /*@BindView(R.id.date)
+        TextView date;*/
+       /* @BindView(R.id.month)
+        TextView month;*/
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.description)
@@ -202,9 +205,19 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         @BindView(R.id.time)
         TextView time;
 
+        TextView day;
+        TextView date;
+        TextView month;
+
+        Date date1 ;
+        String outputDateString = null;
         MyViewHolder(@NonNull View view) {
             super(view);
             ButterKnife.bind(this, view);
+            day=view.findViewById(R.id.day);
+            date=view.findViewById(R.id.date);
+            month=view.findViewById(R.id.month);
+
         }
     }
 //        holder.onBind(position);

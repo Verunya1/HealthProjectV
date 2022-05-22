@@ -89,7 +89,10 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     DatePickerDialog datePickerDialog;
      int mHour ;
      int mMinute;
-
+    EditText title;
+    EditText description;
+    EditText date;
+    EditText time;
 
     ImageView calendar;
     //private FirebaseOptions
@@ -152,20 +155,19 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         View myView = inflater.inflate(R.layout.add_record, null);
         myDialog.setView(myView);
 
-
         AlertDialog dialog = myDialog.create();
         dialog.setCancelable(false);
         dialog.show();
         Button add = myView.findViewById(R.id.addTask2);
         //-в всплывающем окне определяю кто за что отвечает
-        EditText title = myView.findViewById(R.id.title);
-        EditText description = myView.findViewById(R.id.description);
-        EditText date = myView.findViewById(R.id.taskDate);
+        title= myView.findViewById(R.id.addTaskTitle);
+        description= myView.findViewById(R.id.addTaskDescription);
+        date = myView.findViewById(R.id.taskDate);
         Calendar calendar = Calendar.getInstance();
         final int year = calendar.get(Calendar.YEAR);
         final int month = calendar.get(Calendar.MONTH);
         final int day = calendar.get(Calendar.DAY_OF_MONTH);
-        final EditText time = myView.findViewById(R.id.taskTime);
+        time = myView.findViewById(R.id.taskTime);
 
 
         date.setOnClickListener(new View.OnClickListener() {
@@ -202,8 +204,12 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         });
 
 
+  /*  String t1=
+    String d1=;
+    String da=;
+    String ti=;*/
         add.setOnClickListener(v -> {
-            Recycler(title.getText().toString(),description.getText().toString(),date.getText().toString(), time.getText().toString());//- передавть сюда данные времени и тд
+            Recycler(title.getText().toString(),description.getText().toString(),date.getText().toString(),time.getText().toString());//- передавть сюда данные времени и тд
             dialog.dismiss();
         });
 
