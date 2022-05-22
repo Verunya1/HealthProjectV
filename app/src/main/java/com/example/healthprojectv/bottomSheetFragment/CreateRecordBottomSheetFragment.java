@@ -293,5 +293,5 @@ public class CreateRecordBottomSheetFragment extends BottomSheetDialogFragment {
     public interface setRefreshListener {
         void refresh();
     }*/
-
 }
+

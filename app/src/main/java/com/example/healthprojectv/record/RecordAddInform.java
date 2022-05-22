@@ -1,14 +1,10 @@
 package com.example.healthprojectv.record;
 
-import android.widget.EditText;
-
 import com.google.firebase.database.Exclude;
-
-import java.util.Date;
 
 public class RecordAddInform {
     String addTaskTitle,addTaskDescription;
-    String taskDate,taskTime,id;
+    String taskDate,taskTime,status;
     private String key;
 
 
@@ -16,12 +12,20 @@ public class RecordAddInform {
 
     }
 
-    public RecordAddInform(String addTaskTitle,String addTaskDescription,String taskDate,String taskTime,String id){
+//    public boolean getStatus() {
+//        return status.equals("Завершенный");
+//    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public RecordAddInform(String addTaskTitle, String addTaskDescription, String taskDate, String taskTime){
         this.addTaskTitle=addTaskTitle;
         this.addTaskDescription=addTaskDescription;
         this.taskDate=taskDate;
         this.taskTime=taskTime;
-        this.id = id;
+//        this.status = status;
 
 //        this.taskDate = new Date().getTime();
 
