@@ -1,77 +1,60 @@
 package com.example.healthprojectv.record;
 
+import android.app.NotificationChannel;
 
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.NotificationChannel;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
+
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.PopupMenu;
+
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.healthprojectv.R;
 import com.example.healthprojectv.broadcastReceiver.AlarmBroadcastReceiver;
-import com.google.android.gms.tasks.Task;
+import com.example.healthprojectv.broadcastReceiver.AlarmService;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.type.DateTime;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
-
-import android.content.ComponentName;
-import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -95,7 +78,8 @@ public class RecordMain extends Fragment implements View.OnClickListener {
     EditText description;
     EditText date;
     EditText time;
-
+    private PendingIntent pendingIntent;
+    private Calendar calendar1;
     ImageView calendar;
     //private FirebaseOptions
     RecordAdapter recordAdapter;
@@ -220,6 +204,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                 return;
             }
             Recycler(title.getText().toString(), description.getText().toString(), date.getText().toString(), time.getText().toString());//- передавть сюда данные времени и тд
+//            alarmNotification();
 //            createAnAlarm();
 //            createNotification();
             dialog.dismiss();
@@ -286,6 +271,34 @@ public class RecordMain extends Fragment implements View.OnClickListener {
 
     }
 
+    public void alarmNotification() {
+        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent intent = new Intent(getContext(), AlarmService.class);
+
+        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        Toast.makeText(getContext(), "Alarm set Successfully", Toast.LENGTH_SHORT).show();
+    }
+
+    private void createNotificationChannel() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "foxandroidReminderChannel";
+            String description = "Channel For Alarm Manager";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("foxandroid", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = getContext().getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void createAnAlarm() {
         try {
@@ -313,7 +326,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
             alarmIntent.putExtra("DESC", description.getText().toString());
             alarmIntent.putExtra("DATE", date.getText().toString());
             alarmIntent.putExtra("TIME", time.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(),count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(), count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -321,7 +334,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                 } else {
                     alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
                 }
-                count ++;
+                count++;
 
                 PendingIntent intent = PendingIntent.getBroadcast(rootView.getContext(), count, alarmIntent, 0);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -332,7 +345,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
                     }
                 }
-                count ++;
+                count++;
             }
         } catch (Exception e) {
             e.printStackTrace();

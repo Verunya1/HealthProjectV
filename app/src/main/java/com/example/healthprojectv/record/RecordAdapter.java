@@ -73,8 +73,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
 
             holder.day.setText(day1);
             holder.date.setText(dd);
-//            Log.d("RRR",holder.day.getText().toString());
-//            holder.date.setText(dd);
+
             holder.month.setText(month1);
 
         } catch (Exception e) {
@@ -115,43 +114,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         popupMenu.show();
     }
 
-/*    public void showCompleteDialog(int taskId, int position) {
-        Dialog dialog = new Dialog(context, R.style.AppTheme);
-        dialog.setContentView(R.layout.dialog_completed_theme);
-        Button close = dialog.findViewById(R.id.closeButton);
-        close.setOnClickListener(view -> {
-            deleteTaskFromId(taskId, position);
-            dialog.dismiss();
-        });
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialog.show();
-    }*/
 
-/*
-
-    private void deleteTaskFromId(int taskId, int position) {
-        class GetSavedTasks extends AsyncTask<Void, Void, List<Task>> {
-            @Override
-            protected List<Task> doInBackground(Void... voids) {
-                DatabaseClient.getInstance(context)
-                        .getAppDatabase()
-                        .dataBaseAction()
-                        .deleteTaskFromId(taskId);
-
-                return taskList;
-            }
-
-            @Override
-            protected void onPostExecute(List<Task> tasks) {
-                super.onPostExecute(tasks);
-                removeAtPosition(position);
-                setRefreshListener.refresh();
-            }
-        }
-        GetSavedTasks savedTasks = new GetSavedTasks();
-        savedTasks.execute();
-    }
-*/
 
 
     @Override
@@ -193,7 +156,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
 
         }
     }
-//        holder.onBind(position);
+
 
 
     public void addItems(List<RecordAddInform> recordList) {
@@ -210,71 +173,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         notifyDataSetChanged();
     }
 
- /*   public class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.options)
-        ImageView options;
 
-        @BindView(R.id.title)
-        TextView title;
-
-        @BindView(R.id.description)
-        TextView description;
-
-        @BindView(R.id.day)
-        TextView day;
-
-        @BindView(R.id.month)
-        TextView month;
-
-        @BindView(R.id.date)
-        TextView date;
-
-        @BindView(R.id.status)
-        TextView status;
-
-
-        MyViewHolder(View view) {
-            super(view);
-            ButterKnife.bind(this,view);
-        }
-        protected void clear(){
-            title.setText("");
-            description.setText("");
-            day.setText("");
-            month.setText("");
-            date.setText("");
-            status.setText("");
-        }
-        public void onBind(int position){
-//            super.onBind(position); -?
-
-            RecordAddInform recordAddInform= recordAddInforms.get(position);
-
-            if(recordAddInform.getAddTaskTitle()!=null){
-                title.setText(recordAddInform.getAddTaskTitle());
-            }
-
-            if(recordAddInform.getAddTaskDescription()!=null){
-                description.setText(recordAddInform.getAddTaskDescription());
-            }
-
-//            itemView.setOnClickListener(v -> {
-//                Intent intent = new Intent(itemView.getContext(),)
-//            });
-//            if(recordAddInform.()!=null){
-//                day.setText(recordAddInform.getAddTaskTitle());
-//            }
-//
-//            if(recordAddInform.getAddTaskTitle()!=null){
-//                month.setText(recordAddInform.getAddTaskTitle());
-//            }
-//
-//            if(recordAddInform.getAddTaskTitle()!=null){
-//                date.setText(recordAddInform.getAddTaskTitle());
-//            }
-
-
-        }*/
 
 
 }
