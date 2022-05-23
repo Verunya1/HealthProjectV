@@ -13,6 +13,9 @@
             android:name=".safety.RegisterUser"
             android:exported="false" />
         <activity
+            android:name=".activity.BottomNavigationView"
+            android:exported="false" />
+        <activity
             android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>

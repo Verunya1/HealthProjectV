@@ -129,17 +129,8 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         taskRecycler.setAdapter(recordAdapter);
         Content();//из бд
 
-
-//        addTask = (TextView) rootView.findViewById(R.id.addTask);
-//        calendar = (ImageView) rootView.findViewById(R.id.calendar);
-//        displayAllRecord();
-
-
-//        databaseReference=FirebaseDatabase.getInstance().getReference("User");
-
-
         taskRecycler = (RecyclerView) rootView.findViewById(R.id.taskRecycler);
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
         addTask.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -148,7 +139,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
             }
         });
 
-//        Recycler();
+
         return rootView;
     }
 

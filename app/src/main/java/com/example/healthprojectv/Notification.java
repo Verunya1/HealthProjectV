@@ -38,9 +38,8 @@ public class Notification extends Fragment {
 
 
 
-
-
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Comment");
+        if(!comment.getText().toString().equals(""))
         databaseReference.push().setValue(comment.getText().toString());
 
 
