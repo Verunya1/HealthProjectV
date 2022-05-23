@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity{
         getSupportFragmentManager().beginTransaction().replace(R.id.container, notification).commit();
         bottomNavigationView.setSelectedItemId(R.id.notifications);
 
-        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.notifications);
-        badgeDrawable.setVisible(true);
-        badgeDrawable.setNumber(8);
+//        BadgeDrawable badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.notifications);
+//        badgeDrawable.setVisible(true);
+//        badgeDrawable.setNumber(8);
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override

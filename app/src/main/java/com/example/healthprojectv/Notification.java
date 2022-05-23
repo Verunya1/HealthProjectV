@@ -2,6 +2,7 @@ package com.example.healthprojectv;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,6 +22,8 @@ public class Notification extends Fragment {
     private DatabaseReference databaseReference;
     View notification;
     EditText comment;
+    private Object Menu;
+
     public Notification(){
         // require a empty public constructor
     }
@@ -33,11 +37,15 @@ public class Notification extends Fragment {
         comment=notification.findViewById(R.id.comment);
 
 
-//        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Comment");
-//        databaseReference.push().setValue(comment.getText().toString());
 
+
+
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Comment");
+        databaseReference.push().setValue(comment.getText().toString());
 
 
         return notification;
     }
+
+
 }

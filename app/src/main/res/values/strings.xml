@@ -109,4 +109,7 @@
     <string name="sureToDelete" />
     <string name="yes" />
     <string name="no" />
+
+    <string name="action_open">Открыть</string>
+    <string name="action_save">Сохранить</string>
 </resources>

@@ -1,12 +1,19 @@
 package com.example.healthprojectv.record;
 
+
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,10 +40,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.healthprojectv.R;
 import com.example.healthprojectv.broadcastReceiver.AlarmBroadcastReceiver;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +64,14 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+
+
+import android.content.ComponentName;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.view.WindowManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,6 +120,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Record");
 
 //        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference("Recipe").push();
+
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         taskRecycler.setLayoutManager(layoutManager);
@@ -211,7 +230,7 @@ public class RecordMain extends Fragment implements View.OnClickListener {
             }
             Recycler(title.getText().toString(), description.getText().toString(), date.getText().toString(), time.getText().toString());//- передавть сюда данные времени и тд
 //            createAnAlarm();
-            createNotification();
+//            createNotification();
             dialog.dismiss();
         });
 
@@ -220,6 +239,12 @@ public class RecordMain extends Fragment implements View.OnClickListener {
             dialog.dismiss();
 
         });
+
+
+    }
+
+
+    private void createNotification() {
 
 
     }

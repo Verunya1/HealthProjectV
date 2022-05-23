@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/addTask2"
             android:text="Добавить напоминание"
-            android:background="@drawable/btn_background"
+            android:background="@color/colorAccent"
             android:textColor="@color/colorPrimary"
             android:layout_marginTop="40dp" />
         <Button
@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/closeButton"
             android:text="Закрыть"
-            android:background="@drawable/btn_background"
+            android:background="@color/colorAccent"
             android:textColor="@color/colorPrimary"
             android:layout_marginTop="40dp" />
 
