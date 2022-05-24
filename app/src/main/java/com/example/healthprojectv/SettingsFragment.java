@@ -42,9 +42,11 @@ public class SettingsFragment extends Fragment {
                 boolean checked = ((Switch) v).isChecked();
                 if (checked){
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
                 }
                 else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+
                 }
             }
         });

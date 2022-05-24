@@ -43,7 +43,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_record, parent, false);
-//        View itemView = LayoutInflater.from(context).inflate(R.layout.item_record,parent,false);
         return new MyViewHolder(itemView);
     }
 
@@ -53,17 +52,9 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
         holder.title.setText(task.getAddTaskTitle());
         holder.description.setText(task.getAddTaskDescription());
         holder.time.setText(task.getTaskTime());
-        //-отработать нажатие активный неактивный
-//        holder.status.setText(task.getStatus() ? "Завершенный" : "Активный");
         holder.options.setOnClickListener(view -> showPopUpMenu(view, position));
         try {
-//            holder.date = inputDateFormat.format(task.getTaskDate());
-//            holder.outputDateString = dateFormat.format(holder.date);
-//            String[] items1 = task.getTaskDate().split(".");
-//            String day1 = items1[0];
-//            String dd = items1[1];
-//            String month1 = items1[2];
-//            Log.d("RRR",task.getTaskDate());
+
             String datw = task.getTaskDate();
             String[] items1 = datw.split("\\.");
             String day1 = items1[0];
@@ -123,12 +114,6 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.MyViewHold
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        /* @BindView(R.id.day)
-         TextView day;*/
-        /*@BindView(R.id.date)
-        TextView date;*/
-       /* @BindView(R.id.month)
-        TextView month;*/
         @BindView(R.id.title)
         TextView title;
         @BindView(R.id.description)

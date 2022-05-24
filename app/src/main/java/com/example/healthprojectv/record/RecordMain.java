@@ -38,9 +38,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.healthprojectv.R;
-import com.example.healthprojectv.broadcastReceiver.AlarmBroadcastReceiver;
-import com.example.healthprojectv.broadcastReceiver.AlarmService;
-import com.google.android.material.snackbar.Snackbar;
+
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -102,8 +101,6 @@ public class RecordMain extends Fragment implements View.OnClickListener {
 
         listRecords = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Record");
-
-//        DatabaseReference databaseReference =  FirebaseDatabase.getInstance().getReference("Recipe").push();
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
@@ -204,9 +201,6 @@ public class RecordMain extends Fragment implements View.OnClickListener {
                 return;
             }
             Recycler(title.getText().toString(), description.getText().toString(), date.getText().toString(), time.getText().toString());//- передавть сюда данные времени и тд
-//            alarmNotification();
-//            createAnAlarm();
-//            createNotification();
             dialog.dismiss();
         });
 
@@ -233,18 +227,14 @@ public class RecordMain extends Fragment implements View.OnClickListener {
         databaseReference.push().setValue(recordAddInform);
         recordAdapter.notifyDataSetChanged();
         Content();
-//         добавить когда появится бд и поставить перед 169 строчкой
-//        Delete();
-
 
     }
 
-    private void Content() {
+    private void Content() { //полуение  данных из базы данных
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listRecords.clear();
-
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     RecordAddInform recordAddInform = postSnapshot.getValue(RecordAddInform.class);
 
@@ -259,8 +249,8 @@ public class RecordMain extends Fragment implements View.OnClickListener {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-//                Toast.makeText(getContext(), "",error.getMessage(), Toast.LENGTH_SHORT).show();
-                Snackbar.make(rootView, "Ошибка", Snackbar.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Ошибка", Toast.LENGTH_SHORT).show();
+//                Snackbar.make(rootView, "Ошибка", Snackbar.LENGTH_LONG).show();
             }
         });
     }
@@ -271,86 +261,5 @@ public class RecordMain extends Fragment implements View.OnClickListener {
 
     }
 
-    public void alarmNotification() {
-        alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
 
-        Intent intent = new Intent(getContext(), AlarmService.class);
-
-        pendingIntent = PendingIntent.getBroadcast(getContext(), 0, intent, 0);
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar1.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        Toast.makeText(getContext(), "Alarm set Successfully", Toast.LENGTH_SHORT).show();
-    }
-
-    private void createNotificationChannel() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "foxandroidReminderChannel";
-            String description = "Channel For Alarm Manager";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-            NotificationChannel channel = new NotificationChannel("foxandroid", name, importance);
-            channel.setDescription(description);
-
-            NotificationManager notificationManager = getContext().getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void createAnAlarm() {
-        try {
-            String[] items1 = date.getText().toString().split("\\.");
-            String dd = items1[0];
-            String month = items1[1];
-            String year = items1[2];
-
-            String[] itemTime = date.getText().toString().split(":");
-            String hour = itemTime[0];
-            String min = itemTime[1];
-
-            Calendar cur_cal = new GregorianCalendar();
-            cur_cal.setTimeInMillis(System.currentTimeMillis());
-
-            Calendar cal = new GregorianCalendar();
-            cal.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
-            cal.set(Calendar.MINUTE, Integer.parseInt(min));
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-            cal.set(Calendar.DATE, Integer.parseInt(dd));
-
-            Intent alarmIntent = new Intent(rootView.getContext(), AlarmBroadcastReceiver.class);
-            alarmIntent.putExtra("TITLE", title.getText().toString());
-            alarmIntent.putExtra("DESC", description.getText().toString());
-            alarmIntent.putExtra("DATE", date.getText().toString());
-            alarmIntent.putExtra("TIME", time.getText().toString());
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(rootView.getContext(), count, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-                }
-                count++;
-
-                PendingIntent intent = PendingIntent.getBroadcast(rootView.getContext(), count, alarmIntent, 0);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
-                    } else {
-                        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis() - 600000, intent);
-                    }
-                }
-                count++;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
 }

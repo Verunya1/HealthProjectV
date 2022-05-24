@@ -3,7 +3,20 @@ package com.example.healthprojectv.safety;
 import android.widget.EditText;
 
 public class User {
-    public String name,age,email,id;
+    public String name;
+    public String age;
+    public String email;
+    public String id;
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String comment;
     public User(){
 
     }
