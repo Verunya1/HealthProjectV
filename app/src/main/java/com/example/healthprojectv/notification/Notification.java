@@ -1,21 +1,21 @@
-package com.example.healthprojectv;
+package com.example.healthprojectv.notification;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.healthprojectv.record.RecordAddInform;
-import com.google.android.material.navigation.NavigationBarView;
+
+import com.example.healthprojectv.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,7 +23,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,8 @@ public class Notification extends Fragment {
     private Object Menu;
     private List<String> notificationRecords;
     Button save;
-String value;
+    String value;
+
     public Notification() {
         // require a empty public constructor
     }
@@ -47,9 +48,9 @@ String value;
 
         notification = inflater.inflate(R.layout.fragment_notification, container, false);
         comment = notification.findViewById(R.id.comment);
-        save=notification.findViewById(R.id.save);
+        save = notification.findViewById(R.id.save);
 
-        notificationRecords=new ArrayList<>();
+        notificationRecords = new ArrayList<>();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Comment");
         Content();
@@ -78,7 +79,7 @@ String value;
 //
                 value = snapshot.getValue(String.class);
                 comment.setText(value);
-                }
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

@@ -12,7 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.healthprojectv.Notification;
+import com.example.healthprojectv.notification.Notification;
 import com.example.healthprojectv.R;
 import com.example.healthprojectv.safety.RegisterUser;
 import com.google.android.gms.tasks.OnCompleteListener;
